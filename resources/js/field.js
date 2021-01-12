@@ -11,10 +11,4 @@ Nova.booting((Vue, router, store) => {
     "form-nova-hasone-field-minimizer",
     require("./components/FormField")
   );
-
-  console.log("nova-panel", document.getElementsByClassName("nova-panel"));
-  console.log(
-    "nova-relationshi-panel",
-    document.getElementsByClassName("nova-relationship-panel")
-  );
 });

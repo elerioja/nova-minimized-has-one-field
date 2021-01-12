@@ -16,8 +16,6 @@ class FieldServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        Nova::enableThemingClasses();
-
         Nova::serving(function (ServingNova $event) {
             Nova::script('nova-hasone-field-minimizer', __DIR__ . '/../dist/js/field.js');
             Nova::style('nova-hasone-field-minimizer', __DIR__ . '/../dist/css/field.css');

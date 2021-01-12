@@ -1,29 +1,27 @@
 <template>
-  <resource-index
-    :field="field"
-    :resource-name="field.resourceName"
-    :via-resource="resourceName"
-    :via-resource-id="resourceId"
-    :via-relationship="field.hasOneRelationship"
-    :relationship-type="'hasOne'"
-    @actionExecuted="actionExecuted"
-    :load-cards="false"
-    :disable-pagination="true"
-    :should-override-meta="false"
-  />
+  <panel-item :field="field">
+    <template slot="value">
+      <router-link
+        v-if="field.viewable && field.value"
+        :to="{
+          name: 'detail',
+          params: {
+            resourceName: field.resourceName,
+            resourceId: field.hasOneId,
+          },
+        }"
+        class="no-underline font-bold dim text-primary"
+      >
+        {{ field.value }} jou
+      </router-link>
+      <p v-else-if="field.value">{{ field.value }}</p>
+      <p v-else>&mdash;</p>
+    </template>
+  </panel-item>
 </template>
 
 <script>
 export default {
-  props: ['resourceName', 'resourceId', 'resource', 'field'],
-
-  methods: {
-    /**
-     * Handle the actionExecuted event and pass it up the chain.
-     */
-    actionExecuted() {
-      this.$emit('actionExecuted')
-    },
-  },
+  props: ['resource', 'resourceName', 'resourceId', 'field'],
 }
 </script>
