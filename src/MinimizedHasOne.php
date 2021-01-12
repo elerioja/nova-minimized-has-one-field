@@ -337,8 +337,8 @@ class MinimizedHasOne extends Field implements RelatableField
 
     protected function formatDisplayValue($resource)
     {
-        $column_name = config('nova-minimized-has-one-field.column_name');
-        return $resource->{$column_name};
+        $resource_property = config('nova-minimized-has-one-field.resource_property');
+        return $resource->{$resource_property};
     }
     /**
      * Specify if the related resource can be viewed.

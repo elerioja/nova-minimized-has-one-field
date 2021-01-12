@@ -27,7 +27,7 @@ class FieldServiceProvider extends ServiceProvider
         });
 
         Nova::provideToScript([
-            'column_name' =>  config('nova-hasone-field-minimizer.column_name', 'id'),
+            'resource_property' =>  config('nova-hasone-field-minimizer.resource_property', 'id'),
         ]);
     }
 
