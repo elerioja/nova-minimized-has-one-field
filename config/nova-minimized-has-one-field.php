@@ -10,12 +10,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Column name
+    | Resource property
     |--------------------------------------------------------------------------
     |
-    | Enables/disables duplicated pagination at the top of the resource table.
+    | Resource property value used to display column in panel.
     |
     */
 
-    'column_name' => 'id',
+    'resource_property' => 'id',
 ];
