@@ -431,7 +431,7 @@ var render = function() {
                     }
                   }
                 },
-                [_vm._v("\n      " + _vm._s(_vm.field.value) + " jou\n    ")]
+                [_vm._v("\n      " + _vm._s(_vm.field.value) + " \n    ")]
               )
             : _vm.field.value
             ? _c("p", [_vm._v(_vm._s(_vm.field.value))])
@@ -514,6 +514,7 @@ var _methods;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
 //
 //
 //
@@ -691,7 +692,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getAvailableResources: function getAvailableResources() {
       var _this2 = this;
 
-      console.log('jess');
       return;
       fetchAvailableResources(this.resourceName, this.field.attribute, this.queryParams).then(function (_ref) {
         var _ref$data = _ref.data,

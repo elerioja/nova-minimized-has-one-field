@@ -12,7 +12,7 @@
         }"
         class="no-underline font-bold dim text-primary"
       >
-        {{ field.value }} jou
+        {{ field.value }} 
       </router-link>
       <p v-else-if="field.value">{{ field.value }}</p>
       <p v-else>&mdash;</p>

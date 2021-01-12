@@ -52,6 +52,7 @@
           {{ __('With Trashed') }}
         </checkbox-with-label>
       </div>
+      
     </template>
   </default-field>
 </template>
@@ -178,7 +179,6 @@ export default {
      * Get the resources that may be related to this resource.
      */
     getAvailableResources() {
-      console.log('jess')
       return 
         fetchAvailableResources(
           this.resourceName,

@@ -18,6 +18,7 @@ use Laravel\Nova\Http\Requests\ResourceIndexRequest;
 use Laravel\Nova\Query\Builder;
 use Laravel\Nova\Rules\Relatable;
 use Laravel\Nova\TrashedStatus;
+use Laravel\Nova\Resource;
 
 class MinimizedHasOne extends Field implements RelatableField
 {
@@ -160,11 +161,11 @@ class MinimizedHasOne extends Field implements RelatableField
             $value = $resource->getRelation($this->attribute);
         }
         if (!$value) {
-
             $value = $resource->{$this->attribute}()->withoutGlobalScopes()->getResults();
         }
 
         if ($value) {
+
             $this->hasOneId = $value->getKey();
 
             $resource = new $this->resourceClass($value);
@@ -328,12 +329,17 @@ class MinimizedHasOne extends Field implements RelatableField
     {
         return array_filter([
             'avatar' => $resource->resolveAvatarUrl($request),
-            'display' => $this->formatDisplayValue($resource),
+            'display' => $resource->id,
             'subtitle' => $resource->subtitle(),
             'value' => $resource->getKey(),
         ]);
     }
 
+    protected function formatDisplayValue($resource)
+    {
+        $column_name = config('nova-minimized-has-one-field.column_name');
+        return $resource->{$column_name};
+    }
     /**
      * Specify if the related resource can be viewed.
      *
@@ -416,7 +422,7 @@ class MinimizedHasOne extends Field implements RelatableField
             'withSubtitles' => $this->withSubtitles,
             'showCreateRelationButton' => $this->createRelationShouldBeShown(app(NovaRequest::class)),
             'singularLabel' => $this->singularLabel,
-            'viewable' => $this->viewable,
+            'viewable' => $this->viewable
         ], parent::jsonSerialize());
     }
 }
