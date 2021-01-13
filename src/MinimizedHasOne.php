@@ -112,7 +112,6 @@ class MinimizedHasOne extends Field implements RelatableField
     public function __construct($name, $attribute = null, $resource = null)
     {
         parent::__construct($name, $attribute);
-
         $resource = $resource ?? ResourceRelationshipGuesser::guessResource($name);
         $this->resourceClass = $resource;
         $this->resourceName = $resource::uriKey();
@@ -169,9 +168,7 @@ class MinimizedHasOne extends Field implements RelatableField
             $this->hasOneId = $value->getKey();
 
             $resource = new $this->resourceClass($value);
-
             $this->value = $this->formatDisplayValue($resource);
-
             $this->viewable = $this->viewable
                 && $resource->authorizedToView(request());
         }
@@ -338,7 +335,8 @@ class MinimizedHasOne extends Field implements RelatableField
     protected function formatDisplayValue($resource)
     {
         $resource_property = config('nova-minimized-has-one-field.resource_property');
-        return $resource->{$resource_property};
+        if ($resource_property === null) return $resource->id;
+        else return $resource->{$resource_property};
     }
     /**
      * Specify if the related resource can be viewed.
