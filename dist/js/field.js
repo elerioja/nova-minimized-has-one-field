@@ -375,6 +375,13 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
 //
 //
 //
@@ -514,8 +521,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['resource', 'resourceName', 'resourceId', 'field', 'testId', 'restoreResource', 'resourcesSelected', 'resourceName', 'relationshipType', 'viaRelationship', 'viaResource', 'viaResourceId', 'viaManyToMany', 'checked', 'actionsAreAvailable', 'shouldShowCheckboxes', 'updateSelectionStatus', 'queryString', 'reorderDisabled', 'resourceIsSortable'],
-  mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["Deletable"]],
+  props: ['resource', 'resourceName', 'resourceId', 'field', 'testId', 'restoreResource', 'resourcesSelected', 'relationshipType', 'viaRelationship', 'viaResource', 'viaResourceId', 'viaManyToMany', 'checked', 'actionsAreAvailable', 'shouldShowCheckboxes', 'queryString', 'reorderDisabled', 'resourceIsSortable'],
+
   data: function data() {
     return {
       deleteModalOpen: false,
@@ -531,16 +538,63 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     /**
      * Select the resource in the parent component
      */
-    toggleSelection: function toggleSelection() {
-      this.updateSelectionStatus(this.resource);
-    },
+
     openDeleteModal: function openDeleteModal() {
       this.deleteModalOpen = true;
     },
     confirmDelete: function confirmDelete() {
-      console.log('resourceee', this.resource);
-      this.deleteResources([this.resource]);
+      this.deleteResources([this.field]);
       this.closeDeleteModal();
+    },
+    deleteResources: function deleteResources(resources) {
+      var _this = this;
+
+      var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+      if (this.viaManyToMany) {
+        return this.detachResources(resources);
+      }
+
+      return Nova.request({
+        url: '/nova-api/' + this.field.resourceName,
+        method: 'delete',
+        params: _extends({}, this.queryString, { resources: mapResources(resources) })
+      }).then(callback ? callback : function () {
+        _this.deleteModalOpen = false;
+        _this.getResources();
+      });
+    },
+    getResources: function getResources() {
+      var _this2 = this;
+
+      this.loading = true;
+
+      this.$nextTick(function () {
+        _this2.clearResourceSelections();
+
+        return Object(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["Minimum"])(Nova.request().get('/nova-api/' + _this2.resourceName, {
+          params: _this2.resourceRequestQueryString
+        }), 300).then(function (_ref) {
+          var data = _ref.data;
+
+          _this2.resources = [];
+
+          _this2.resourceResponse = data;
+          _this2.resources = data.resources;
+          _this2.softDeletes = data.softDeletes;
+          _this2.perPage = data.per_page;
+          _this2.allMatchingResourceCount = data.total;
+
+          _this2.loading = false;
+          location.window.reload();
+          _this2.$emit('reload-resources');
+          _this2.$emit('refresh');
+        });
+      });
+    },
+    clearResourceSelections: function clearResourceSelections() {
+      this.selectAllMatchingResources = false;
+      this.selectedResources = [];
     },
     closeDeleteModal: function closeDeleteModal() {
       this.deleteModalOpen = false;
@@ -564,6 +618,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   }
 });
+function mapResources(resources) {
+  console.log(resources);
+  return _.map(resources, function (resource) {
+    return resource.hasOneId;
+  });
+}
 
 /***/ }),
 /* 8 */
@@ -611,7 +671,7 @@ var render = function() {
                       to: {
                         name: "create",
                         params: {
-                          resourceName: _vm.resourceName
+                          resourceName: _vm.field.resourceName
                         },
                         query: {
                           viaResource: _vm.viaResource,
@@ -940,11 +1000,12 @@ if (false) {
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = null
+var __vue_script__ = __webpack_require__(10)
 /* template */
-var __vue_template__ = null
+var __vue_template__ = __webpack_require__(15)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -963,11 +1024,47 @@ var Component = normalizeComponent(
 )
 Component.options.__file = "resources/js/components/FormField.vue"
 
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-c023248a", Component.options)
+  } else {
+    hotAPI.reload("data-v-c023248a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
 module.exports = Component.exports
 
 
 /***/ }),
-/* 10 */,
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    labelFor: {
+      type: String
+    }
+  }
+});
+
+/***/ }),
 /* 11 */,
 /* 12 */,
 /* 13 */,
@@ -27241,7 +27338,34 @@ if (hadRuntime) {
 });
 
 /***/ }),
-/* 15 */,
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "label",
+    {
+      staticClass: "inline-block text-80 pt-2 leading-tight",
+      attrs: { for: _vm.labelFor }
+    },
+    [_vm._t("default")],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-c023248a", module.exports)
+  }
+}
+
+/***/ }),
 /* 16 */
 /***/ (function(module, exports) {
 

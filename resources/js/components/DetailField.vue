@@ -1,4 +1,5 @@
 <template>
+
   <panel-item :field="field">
     <template slot="value">
       <div class="flex space-between">
@@ -24,7 +25,7 @@
       :to="{
         name: 'create',
         params: {
-          resourceName: resourceName,
+          resourceName: field.resourceName,
         },
         query: {
           viaResource: viaResource,
@@ -35,6 +36,8 @@
     >
       Create {{ singularName }} 
     </router-link>
+
+    
       
 
        <div>
@@ -89,6 +92,8 @@
           v-tooltip.click="__(viaManyToMany ? 'Detach' : 'Delete')"
           v-if="field.viewable && field.value"
           @click.prevent="openDeleteModal"
+
+
         >
           <icon />
         </button>
@@ -135,12 +140,11 @@
 </template>
 
 <script>
-import { Deletable } from 'laravel-nova'
+import {Minimum} from 'laravel-nova'
 export default {
   props: ['resource', 'resourceName', 'resourceId', 'field', 'testId',
     'restoreResource',
     'resourcesSelected',
-    'resourceName',
     'relationshipType',
     'viaRelationship',
     'viaResource',
@@ -149,11 +153,10 @@ export default {
     'checked',
     'actionsAreAvailable',
     'shouldShowCheckboxes',
-    'updateSelectionStatus',
     'queryString',
     'reorderDisabled',
     'resourceIsSortable'],
-    mixins:[Deletable],
+  
      data: () => ({
     deleteModalOpen: false,
     restoreModalOpen: false,
@@ -166,18 +169,70 @@ export default {
     /**
      * Select the resource in the parent component
      */
-    toggleSelection() {
-      this.updateSelectionStatus(this.resource)
-    },
+  
 
     openDeleteModal() {
       this.deleteModalOpen = true
+     
     },
 
     confirmDelete() {
-      console.log('resourceee',this.resource)
-      this.deleteResources([this.resource])
+      this.deleteResources([this.field])
       this.closeDeleteModal()
+    },
+     deleteResources(resources, callback = null) {
+      if (this.viaManyToMany) {
+        return this.detachResources(resources)
+      }
+
+      return Nova.request({
+        url: '/nova-api/' + this.field.resourceName,
+        method: 'delete',
+        params: {
+          ...this.queryString,
+          ...{ resources: mapResources(resources) },
+        },
+      }).then(
+        callback
+          ? callback
+          : () => {
+              this.deleteModalOpen = false
+              this.getResources()
+               
+            }
+      )
+    },
+    getResources() {
+      this.loading = true
+
+      this.$nextTick(() => {
+        this.clearResourceSelections()
+
+        return Minimum(
+          Nova.request().get('/nova-api/' + this.resourceName, {
+            params: this.resourceRequestQueryString,
+          }),
+          300
+        ).then(({ data }) => {
+          this.resources = []
+
+          this.resourceResponse = data
+          this.resources = data.resources
+          this.softDeletes = data.softDeletes
+          this.perPage = data.per_page
+          this.allMatchingResourceCount = data.total
+
+          this.loading = false
+          location.window.reload();
+          this.$emit('reload-resources')
+          this.$emit('refresh')
+         
+        })
+      })
+    },
+    clearResourceSelections() {
+      this.selectAllMatchingResources = false
+      this.selectedResources = []
     },
 
     closeDeleteModal() {
@@ -205,5 +260,9 @@ export default {
       }
     },
   }
+}
+function mapResources(resources) {
+  console.log(resources)
+  return _.map(resources, resource => resource.hasOneId)
 }
 </script>

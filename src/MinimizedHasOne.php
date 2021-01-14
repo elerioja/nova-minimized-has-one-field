@@ -191,20 +191,7 @@ class MinimizedHasOne extends Field implements RelatableField
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
-    public function getRules(NovaRequest $request)
-    {
-        $query = $this->buildAssociatableQuery(
-            $request,
-            $request->{$this->attribute . '_trashed'} === 'true'
-        )->toBase();
 
-        return array_merge_recursive(parent::getRules($request), [
-            $this->attribute => array_filter([
-                $this->nullable ? 'nullable' : 'required',
-                new Relatable($request, $query),
-            ]),
-        ]);
-    }
 
     /**
      * Hydrate the given attribute on the model based on the incoming request.
