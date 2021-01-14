@@ -117,6 +117,18 @@ class MinimizedHasOne extends Field implements RelatableField
         $this->resourceName = $resource::uriKey();
         $this->hasOneRelationship = $this->attribute;
         $this->singularLabel = $name;
+
+        $this->filledCallback = function ($request) {
+            $resource = Nova::resourceForKey($request->viaResource);
+
+            if ($resource && $request->viaResourceId) {
+                $parent = $resource::newModel()->find($request->viaResourceId);
+
+                return !is_null($parent->{$this->attribute});
+            }
+
+            return false;
+        };
     }
 
     /**
@@ -227,6 +239,8 @@ class MinimizedHasOne extends Field implements RelatableField
     protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
         if ($request->exists($requestAttribute)) {
+            $model->{$attribute} = $request[$requestAttribute];
+
             $value = $request[$requestAttribute];
 
             $relation = Relation::noConstraints(function () use ($model) {
@@ -235,8 +249,6 @@ class MinimizedHasOne extends Field implements RelatableField
 
             if ($this->isNullValue($value)) {
                 $relation->dissociate();
-            } else {
-                $relation->associate($relation->getQuery()->withoutGlobalScopes()->find($value));
             }
         }
     }

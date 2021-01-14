@@ -517,11 +517,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['resource', 'resourceName', 'resourceId', 'field', 'testId', 'restoreResource', 'resourcesSelected', 'relationshipType', 'viaRelationship', 'viaResource', 'viaResourceId', 'viaManyToMany', 'checked', 'actionsAreAvailable', 'shouldShowCheckboxes', 'queryString', 'reorderDisabled', 'resourceIsSortable'],
+  props: ['resource', 'resourceName', 'resourceId', 'field', 'testId', 'restoreResource', 'resourcesSelected', 'relationshipType', 'viaManyToMany', 'checked', 'actionsAreAvailable', 'shouldShowCheckboxes', 'queryString', 'reorderDisabled', 'resourceIsSortable'],
 
   data: function data() {
     return {
@@ -529,9 +528,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       restoreModalOpen: false
     };
   },
-  mounted: function mounted() {
-    console.log('field', this.field), console.log('resource', this.resource);
-  },
+  mounted: function mounted() {},
 
 
   methods: {
@@ -619,7 +616,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   }
 });
 function mapResources(resources) {
-  console.log(resources);
   return _.map(resources, function (resource) {
     return resource.hasOneId;
   });
@@ -652,7 +648,8 @@ var render = function() {
                         name: "detail",
                         params: {
                           resourceName: _vm.field.resourceName,
-                          resourceId: _vm.field.hasOneId
+                          resourceId: _vm.field.hasOneId,
+                          relatedResourceName: _vm.field.hasOneRelationship
                         }
                       }
                     }
@@ -671,12 +668,13 @@ var render = function() {
                       to: {
                         name: "create",
                         params: {
-                          resourceName: _vm.field.resourceName
+                          resourceName: _vm.field.resourceName,
+                          resourceId: _vm.field.hasOneId
                         },
                         query: {
-                          viaResource: _vm.viaResource,
-                          viaResourceId: _vm.viaResourceId,
-                          viaRelationship: _vm.viaRelationship
+                          viaResource: _vm.field.resourceName,
+                          viaResourceId: _vm.resource.id.value,
+                          viaRelationship: _vm.field.hasOneRelationship
                         }
                       }
                     }
@@ -763,9 +761,9 @@ var render = function() {
                                   resourceId: _vm.field.hasOneId
                                 },
                                 query: {
-                                  viaResource: _vm.viaResource,
-                                  viaResourceId: _vm.viaResourceId,
-                                  viaRelationship: _vm.viaRelationship
+                                  viaResource: _vm.field.resourceName,
+                                  viaResourceId: _vm.resource.id.value,
+                                  viaRelationship: _vm.field.hasOneRelationship
                                 }
                               }
                             }
@@ -1049,6 +1047,8 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
 //
 //
 //
@@ -1056,10 +1056,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    labelFor: {
-      type: String
+
+  mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["FormField"]],
+  props: ['resourceName', 'resourceId', 'field'],
+  methods: {
+    fill: function fill(formData) {
+      formData.append(this.field.attribute, this.value || '');
     }
   }
 });

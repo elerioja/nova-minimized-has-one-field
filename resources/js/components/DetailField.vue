@@ -10,6 +10,7 @@
           params: {
             resourceName: field.resourceName,
             resourceId: field.hasOneId,
+            relatedResourceName:field.hasOneRelationship
           },
         }"
         class="no-underline font-bold dim text-primary"
@@ -17,7 +18,7 @@
         {{ field.value }} 
       </router-link>
       <p v-else-if="field.value">{{ field.value }}</p>
-      <!-- <p v-else>&mdash; {{label}}</p> -->
+      <!-- <p v-else>&mdash; {{label}}</p> --> 
       <router-link
       v-else
       dusk="create-button"
@@ -25,12 +26,13 @@
       :to="{
         name: 'create',
         params: {
-          resourceName: field.resourceName,
-        },
+                resourceName: field.resourceName,
+                resourceId: field.hasOneId,
+              },
         query: {
-          viaResource: viaResource,
-          viaResourceId: viaResourceId,
-          viaRelationship: viaRelationship,
+          viaResource: field.resourceName,
+          viaResourceId: resource.id.value,
+          viaRelationship: field.hasOneRelationship,
         },
       }"
     >
@@ -38,10 +40,7 @@
     </router-link>
 
     
-      
-
        <div>
-
            <!-- View Resource Link -->
         <span v-if="field.viewable && field.value" class="inline-flex">
           <router-link
@@ -73,9 +72,9 @@
                 resourceId: field.hasOneId,
               },
               query: {
-                viaResource: viaResource,
-                viaResourceId: viaResourceId,
-                viaRelationship: viaRelationship,
+                viaResource: field.resourceName,
+                viaResourceId: resource.id.value,
+                viaRelationship: field.hasOneRelationship,
               },
             }"
             v-tooltip.click="__('Edit')"
@@ -146,9 +145,6 @@ export default {
     'restoreResource',
     'resourcesSelected',
     'relationshipType',
-    'viaRelationship',
-    'viaResource',
-    'viaResourceId',
     'viaManyToMany',
     'checked',
     'actionsAreAvailable',
@@ -162,7 +158,6 @@ export default {
     restoreModalOpen: false,
   }),
    mounted() {
-  console.log('field',this.field),  console.log('resource', this.resource)
  },
 
   methods: {
@@ -262,7 +257,6 @@ export default {
   }
 }
 function mapResources(resources) {
-  console.log(resources)
   return _.map(resources, resource => resource.hasOneId)
 }
 </script>

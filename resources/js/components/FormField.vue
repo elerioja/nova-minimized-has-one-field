@@ -5,11 +5,16 @@
 </template>
 
 <script>
+import { FormField } from 'laravel-nova';
+
 export default {
-  props: {
-    labelFor: {
-      type: String,
-    },
-  },
+  
+  mixins: [FormField],
+  props: ['resourceName', 'resourceId', 'field'],
+  methods:{
+    fill(formData) {
+    formData.append(this.field.attribute, this.value || '')
+          }
+        }
 }
 </script>
