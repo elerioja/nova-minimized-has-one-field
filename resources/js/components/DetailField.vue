@@ -195,8 +195,5 @@ export default {
     },
   }
 }
-function mapResources(resources) {
-  return _.map(resources, resource => resource.hasOneId)
-}
 </script>
 

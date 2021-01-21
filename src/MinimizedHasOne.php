@@ -103,6 +103,18 @@ class MinimizedHasOne extends Field implements RelatableField
         $this->resourceName = $resource::uriKey();
         $this->hasOneRelationship = $this->attribute;
         $this->singularLabel = $name;
+
+        $this->filledCallback = function ($request) {
+            $resource = Nova::resourceForKey($request->viaResource);
+
+            if ($resource && $request->viaResourceId) {
+                $parent = $resource::newModel()->find($request->viaResourceId);
+
+                return !is_null($parent->{$this->attribute});
+            }
+
+            return false;
+        };
     }
 
     /**
@@ -193,7 +205,6 @@ class MinimizedHasOne extends Field implements RelatableField
             call_user_func($this->filledCallback, $request, $model);
         }
     }
-
 
     /**
      * Format the given associatable resource.

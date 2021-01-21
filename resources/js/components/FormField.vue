@@ -5,6 +5,7 @@
 </template>
 
 <script>
+
 import { FormField } from 'laravel-nova';
 export default {
   

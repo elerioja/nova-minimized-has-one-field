@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -174,411 +174,6 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(2);
-module.exports = __webpack_require__(11);
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-Nova.booting(function (Vue, router, store) {
-  Vue.component("index-nova-hasone-field-minimizer", __webpack_require__(3));
-  Vue.component("detail-nova-hasone-field-minimizer", __webpack_require__(6));
-  Vue.component("form-nova-hasone-field-minimizer", __webpack_require__(10));
-});
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(4)
-/* template */
-var __vue_template__ = __webpack_require__(5)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/IndexField.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-9e63f81a", Component.options)
-  } else {
-    hotAPI.reload("data-v-9e63f81a", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['resourceName', 'field']
-});
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { class: "text-" + _vm.field.textAlign }, [
-    _c("span", [
-      _vm.field.viewable && _vm.field.value
-        ? _c(
-            "span",
-            [
-              _c(
-                "router-link",
-                {
-                  staticClass: "no-underline dim text-primary font-bold",
-                  attrs: {
-                    to: {
-                      name: "detail",
-                      params: {
-                        resourceName: _vm.field.resourceName,
-                        resourceId: _vm.field.hasOneId
-                      }
-                    }
-                  }
-                },
-                [_vm._v("\n        " + _vm._s(_vm.field.value) + "\n      ")]
-              )
-            ],
-            1
-          )
-        : _vm.field.value
-        ? _c("span", [_vm._v(_vm._s(_vm.field.value))])
-        : _c("span", [_vm._v("—")])
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-9e63f81a", module.exports)
-  }
-}
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(7)
-/* template */
-var __vue_template__ = __webpack_require__(9)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/DetailField.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0224618e", Component.options)
-  } else {
-    hotAPI.reload("data-v-0224618e", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['resource', 'resourceName', 'resourceId', 'field', 'testId', 'queryString'],
-
-  data: function data() {
-    return {
-      deleteModalOpen: false
-    };
-  },
-  mounted: function mounted() {
-    console.log('res', this.resource);
-    console.log('field', this.field);
-  },
-
-  mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["Deletable"]],
-  methods: {
-    /**
-     * Select the resource in the parent component
-     */
-
-    openDeleteModal: function openDeleteModal() {
-      this.deleteModalOpen = true;
-    },
-    confirmDelete: function confirmDelete() {
-      var _this = this;
-
-      this.deleteResources([this.field.resource], function (response) {
-        Nova.success(_this.__('The :resource was deleted!', {
-          resource: _this.field.singularLabel.toLowerCase()
-        }));
-        window.location.reload();
-      });
-    },
-    getResources: function getResources() {
-      var _this2 = this;
-
-      this.loading = true;
-
-      this.$nextTick(function () {
-        _this2.clearResourceSelections();
-
-        return Object(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["Minimum"])(Nova.request().get('/nova-api/' + _this2.resourceName, {
-          params: _this2.resourceRequestQueryString
-        }), 300).then(function (_ref) {
-          var data = _ref.data;
-
-          _this2.resources = [];
-
-          _this2.resourceResponse = data;
-          _this2.resources = data.resources;
-          _this2.softDeletes = data.softDeletes;
-          _this2.perPage = data.per_page;
-          _this2.allMatchingResourceCount = data.total;
-
-          _this2.loading = false;
-          window.location.reload();
-          _this2.$emit('reload-resources');
-          _this2.$emit('refresh');
-        });
-      });
-    },
-    clearResourceSelections: function clearResourceSelections() {
-      this.selectAllMatchingResources = false;
-      this.selectedResources = [];
-    },
-    closeDeleteModal: function closeDeleteModal() {
-      this.deleteModalOpen = false;
-    }
-  },
-  computed: {
-    singularName: function singularName() {
-      if (this.field) {
-        return this.field.singularLabel.toLowerCase();
-      }
-    }
-  }
-});
-function mapResources(resources) {
-  return _.map(resources, function (resource) {
-    return resource.hasOneId;
-  });
-}
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -26848,6 +26443,406 @@ if (hadRuntime) {
 });
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(3);
+module.exports = __webpack_require__(13);
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+Nova.booting(function (Vue, router, store) {
+  Vue.component("index-nova-hasone-field-minimizer", __webpack_require__(4));
+  Vue.component("detail-nova-hasone-field-minimizer", __webpack_require__(7));
+  Vue.component("form-nova-hasone-field-minimizer", __webpack_require__(10));
+});
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(5)
+/* template */
+var __vue_template__ = __webpack_require__(6)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/IndexField.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-9e63f81a", Component.options)
+  } else {
+    hotAPI.reload("data-v-9e63f81a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['resourceName', 'field']
+});
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { class: "text-" + _vm.field.textAlign }, [
+    _c("span", [
+      _vm.field.viewable && _vm.field.value
+        ? _c(
+            "span",
+            [
+              _c(
+                "router-link",
+                {
+                  staticClass: "no-underline dim text-primary font-bold",
+                  attrs: {
+                    to: {
+                      name: "detail",
+                      params: {
+                        resourceName: _vm.field.resourceName,
+                        resourceId: _vm.field.hasOneId
+                      }
+                    }
+                  }
+                },
+                [_vm._v("\n        " + _vm._s(_vm.field.value) + "\n      ")]
+              )
+            ],
+            1
+          )
+        : _vm.field.value
+        ? _c("span", [_vm._v(_vm._s(_vm.field.value))])
+        : _c("span", [_vm._v("—")])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-9e63f81a", module.exports)
+  }
+}
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(8)
+/* template */
+var __vue_template__ = __webpack_require__(9)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/DetailField.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0224618e", Component.options)
+  } else {
+    hotAPI.reload("data-v-0224618e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['resource', 'resourceName', 'resourceId', 'field', 'testId', 'queryString'],
+
+  data: function data() {
+    return {
+      deleteModalOpen: false
+    };
+  },
+  mounted: function mounted() {
+    console.log('res', this.resource);
+    console.log('field', this.field);
+  },
+
+  mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["Deletable"]],
+  methods: {
+    /**
+     * Select the resource in the parent component
+     */
+
+    openDeleteModal: function openDeleteModal() {
+      this.deleteModalOpen = true;
+    },
+    confirmDelete: function confirmDelete() {
+      var _this = this;
+
+      this.deleteResources([this.field.resource], function (response) {
+        Nova.success(_this.__('The :resource was deleted!', {
+          resource: _this.field.singularLabel.toLowerCase()
+        }));
+        window.location.reload();
+      });
+    },
+    getResources: function getResources() {
+      var _this2 = this;
+
+      this.loading = true;
+
+      this.$nextTick(function () {
+        _this2.clearResourceSelections();
+
+        return Object(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["Minimum"])(Nova.request().get('/nova-api/' + _this2.resourceName, {
+          params: _this2.resourceRequestQueryString
+        }), 300).then(function (_ref) {
+          var data = _ref.data;
+
+          _this2.resources = [];
+
+          _this2.resourceResponse = data;
+          _this2.resources = data.resources;
+          _this2.softDeletes = data.softDeletes;
+          _this2.perPage = data.per_page;
+          _this2.allMatchingResourceCount = data.total;
+
+          _this2.loading = false;
+          window.location.reload();
+          _this2.$emit('reload-resources');
+          _this2.$emit('refresh');
+        });
+      });
+    },
+    clearResourceSelections: function clearResourceSelections() {
+      this.selectAllMatchingResources = false;
+      this.selectedResources = [];
+    },
+    closeDeleteModal: function closeDeleteModal() {
+      this.deleteModalOpen = false;
+    }
+  },
+  computed: {
+    singularName: function singularName() {
+      if (this.field) {
+        return this.field.singularLabel.toLowerCase();
+      }
+    }
+  }
+});
+
+/***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27139,9 +27134,9 @@ if (false) {
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = __webpack_require__(16)
+var __vue_script__ = __webpack_require__(11)
 /* template */
-var __vue_template__ = __webpack_require__(17)
+var __vue_template__ = __webpack_require__(12)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -27181,21 +27176,11 @@ module.exports = Component.exports
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
 //
 //
@@ -27203,6 +27188,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -27217,7 +27203,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 17 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -27243,6 +27229,12 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-c023248a", module.exports)
   }
 }
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);
