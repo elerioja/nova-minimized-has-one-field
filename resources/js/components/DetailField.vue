@@ -1,4 +1,5 @@
 <template>
+
   <panel-item :field="field">
     <template slot="value">
       <div class="flex space-between">
@@ -9,6 +10,7 @@
           params: {
             resourceName: field.resourceName,
             resourceId: field.hasOneId,
+            relatedResourceName:field.hasOneRelationship
           },
         }"
         class="no-underline font-bold dim text-primary"
@@ -16,7 +18,7 @@
         {{ field.value }} 
       </router-link>
       <p v-else-if="field.value">{{ field.value }}</p>
-      <!-- <p v-else>&mdash; {{label}}</p> -->
+      <!-- <p v-else>&mdash; {{label}}</p> --> 
       <router-link
       v-else
       dusk="create-button"
@@ -24,21 +26,21 @@
       :to="{
         name: 'create',
         params: {
-          resourceName: resourceName,
-        },
+                resourceName: field.resourceName,
+                resourceId: field.hasOneId,
+              },
         query: {
-          viaResource: viaResource,
-          viaResourceId: viaResourceId,
-          viaRelationship: viaRelationship,
+          viaResource: field.resourceName,
+          viaResourceId: resource.id.value,
+          viaRelationship: field.hasOneRelationship,
         },
       }"
     >
       Create {{ singularName }} 
     </router-link>
-      
 
+    
        <div>
-
            <!-- View Resource Link -->
         <span v-if="field.viewable && field.value" class="inline-flex">
           <router-link
@@ -70,9 +72,9 @@
                 resourceId: field.hasOneId,
               },
               query: {
-                viaResource: viaResource,
-                viaResourceId: viaResourceId,
-                viaRelationship: viaRelationship,
+                viaResource: field.resourceName,
+                viaResourceId: resource.id.value,
+                viaRelationship: field.hasOneRelationship,
               },
             }"
             v-tooltip.click="__('Edit')"
@@ -86,30 +88,19 @@
           :data-testid="`${testId}-delete-button`"
           :dusk="`${field.hasOneId}-delete-button`"
           class="inline-flex appearance-none cursor-pointer text-70 hover:text-primary mr-3"
-          v-tooltip.click="__(viaManyToMany ? 'Detach' : 'Delete')"
+          v-tooltip.click="__('Delete')"
           v-if="field.viewable && field.value"
           @click.prevent="openDeleteModal"
         >
           <icon />
         </button>
 
-        <!-- Restore Resource Link -->
-        <button
-          :dusk="`${field.hasOneId}-restore-button`"
-          class="appearance-none cursor-pointer text-70 hover:text-primary mr-3"
-          v-if="resource.authorizedToRestore && resource.softDeleted && !viaManyToMany"
-          v-tooltip.click="__('Restore')"
-          @click.prevent="openRestoreModal"
-        >
-          <icon type="restore" with="20" height="21" />
-        </button>
-
-        <portal to="modals" transition="fade-transition" v-if="deleteModalOpen || restoreModalOpen">
+        <portal to="modals" transition="fade-transition" v-if="deleteModalOpen">
           <delete-resource-modal
             v-if="deleteModalOpen"
             @confirm="confirmDelete"
             @close="closeDeleteModal"
-            :mode="viaManyToMany ? 'detach' : 'delete'"
+            :mode="'delete'"
           >
             <div slot-scope="{ uppercaseMode, mode }" class="p-8">
               <heading :level="2" class="mb-6">{{ __(uppercaseMode + ' Resource') }}</heading>
@@ -118,15 +109,6 @@
               </p>
             </div>
           </delete-resource-modal>
-
-          <restore-resource-modal v-if="restoreModalOpen" @confirm="confirmRestore" @close="closeRestoreModal">
-            <div class="p-8">
-              <heading :level="2" class="mb-6">{{ __('Restore Resource') }}</heading>
-              <p class="text-80 leading-normal">
-                {{ __('Are you sure you want to restore this resource?') }}
-              </p>
-            </div>
-          </restore-resource-modal>
         </portal>
       </div>
       </div>
@@ -135,68 +117,75 @@
 </template>
 
 <script>
-import { Deletable } from 'laravel-nova'
+import {Minimum, Deletable} from 'laravel-nova'
 export default {
   props: ['resource', 'resourceName', 'resourceId', 'field', 'testId',
-    'restoreResource',
-    'resourcesSelected',
-    'resourceName',
-    'relationshipType',
-    'viaRelationship',
-    'viaResource',
-    'viaResourceId',
-    'viaManyToMany',
-    'checked',
-    'actionsAreAvailable',
-    'shouldShowCheckboxes',
-    'updateSelectionStatus',
-    'queryString',
-    'reorderDisabled',
-    'resourceIsSortable'],
-    mixins:[Deletable],
-     data: () => ({
-    deleteModalOpen: false,
-    restoreModalOpen: false,
-  }),
-   mounted() {
-  console.log('field',this.field),  console.log('resource', this.resource)
- },
+    'queryString'],
 
+    data: () => ({
+    deleteModalOpen: false,
+  }),
+  mounted(){
+    console.log('res',this.resource)
+    console.log('field', this.field)
+  },
+  mixins: [Deletable],
   methods: {
     /**
      * Select the resource in the parent component
      */
-    toggleSelection() {
-      this.updateSelectionStatus(this.resource)
-    },
-
+  
     openDeleteModal() {
       this.deleteModalOpen = true
     },
 
     confirmDelete() {
-      console.log('resourceee',this.resource)
-      this.deleteResources([this.resource])
-      this.closeDeleteModal()
+      this.deleteResources([this.field.resource],response => {
+        Nova.success(
+          this.__('The :resource was deleted!', {
+            resource: this.field.singularLabel.toLowerCase(),
+          })
+        )
+          window.location.reload()
+      })
+    },
+
+    getResources() {
+      this.loading = true
+
+      this.$nextTick(() => {
+        this.clearResourceSelections()
+
+        return Minimum(
+          Nova.request().get('/nova-api/' + this.resourceName, {
+            params: this.resourceRequestQueryString,
+          }),
+          300
+        ).then(({ data }) => {
+          this.resources = []
+
+          this.resourceResponse = data
+          this.resources = data.resources
+          this.softDeletes = data.softDeletes
+          this.perPage = data.per_page
+          this.allMatchingResourceCount = data.total
+
+          this.loading = false
+          window.location.reload();
+          this.$emit('reload-resources')
+          this.$emit('refresh')
+         
+        })
+      })
+    },
+    clearResourceSelections() {
+      this.selectAllMatchingResources = false
+      this.selectedResources = []
     },
 
     closeDeleteModal() {
       this.deleteModalOpen = false
     },
-
-    openRestoreModal() {
-      this.restoreModalOpen = true
-    },
-
-    confirmRestore() {
-      this.restoreResources(this.resource)
-      this.closeRestoreModal()
-    },
-
-    closeRestoreModal() {
-      this.restoreModalOpen = false
-    },
-
   },
   computed:{
     singularName() {
@@ -206,4 +195,8 @@ export default {
     },
   }
 }
+function mapResources(resources) {
+  return _.map(resources, resource => resource.hasOneId)
+}
 </script>
+

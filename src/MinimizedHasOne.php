@@ -81,25 +81,11 @@ class MinimizedHasOne extends Field implements RelatableField
     public $filledCallback;
 
     /**
-     * The attribute that is the inverse of this relationship.
-     *
-     * @var string
-     */
-    public $inverse;
-
-    /**
      * The displayable singular label of the relation.
      *
      * @var string
      */
     public $singularLabel;
-
-    /**
-     * Indicates whether the field should display the "With Trashed" option.
-     *
-     * @var bool
-     */
-    public $displaysWithTrashed = true;
 
     /**
      * Create a new field.
@@ -127,7 +113,7 @@ class MinimizedHasOne extends Field implements RelatableField
      */
     public function authorize(Request $request)
     {
-        return $this->isNotRedundant($request) && call_user_func(
+        return call_user_func(
             [$this->resourceClass, 'authorizedToViewAny'],
             $request
         ) && parent::authorize($request);
@@ -136,6 +122,7 @@ class MinimizedHasOne extends Field implements RelatableField
     /**
      * Determine if the field is not redundant.
      *
+     * Ex: Is this a "user" belongs to field in a blog post list being shown on the "user" detail page.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
@@ -186,27 +173,6 @@ class MinimizedHasOne extends Field implements RelatableField
     }
 
     /**
-     * Get the validation rules for this field.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @return array
-     */
-    public function getRules(NovaRequest $request)
-    {
-        $query = $this->buildAssociatableQuery(
-            $request,
-            $request->{$this->attribute . '_trashed'} === 'true'
-        )->toBase();
-
-        return array_merge_recursive(parent::getRules($request), [
-            $this->attribute => array_filter([
-                $this->nullable ? 'nullable' : 'required',
-                new Relatable($request, $query),
-            ]),
-        ]);
-    }
-
-    /**
      * Hydrate the given attribute on the model based on the incoming request.
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
@@ -228,92 +194,6 @@ class MinimizedHasOne extends Field implements RelatableField
         }
     }
 
-    /**
-     * Hydrate the given attribute on the model based on the incoming request.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  string  $requestAttribute
-     * @param  object  $model
-     * @param  string  $attribute
-     * @return mixed
-     */
-    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
-    {
-        if ($request->exists($requestAttribute)) {
-            $value = $request[$requestAttribute];
-
-            $relation = Relation::noConstraints(function () use ($model) {
-                return $model->{$this->attribute}();
-            });
-
-            if ($this->isNullValue($value)) {
-                $relation->dissociate();
-            } else {
-                $relation->associate($relation->getQuery()->withoutGlobalScopes()->find($value));
-            }
-        }
-    }
-
-    /**
-     * Build an associatable query for the field.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  bool  $withTrashed
-     * @return \Laravel\Nova\Query\Builder
-     */
-    public function buildAssociatableQuery(NovaRequest $request, $withTrashed = false)
-    {
-        $model = forward_static_call(
-            [$resourceClass = $this->resourceClass, 'newModel']
-        );
-
-        $query = new Builder($resourceClass);
-
-        $request->first === 'true'
-            ? $query->whereKey($model->newQueryWithoutScopes(), $request->current)
-            : $query->search(
-                $request,
-                $model->newQuery(),
-                $request->search,
-                [],
-                [],
-                TrashedStatus::fromBoolean($withTrashed)
-            );
-
-        return $query->tap(function ($query) use ($request, $model) {
-            forward_static_call($this->associatableQueryCallable($request, $model), $request, $query, $this);
-        });
-    }
-
-    /**
-     * Get the associatable query method name.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return array
-     */
-    protected function associatableQueryCallable(NovaRequest $request, $model)
-    {
-        return ($method = $this->associatableQueryMethod($request, $model))
-            ? [$request->resource(), $method]
-            : [$this->resourceClass, 'relatableQuery'];
-    }
-
-    /**
-     * Get the associatable query method name.
-     *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return string
-     */
-    protected function associatableQueryMethod(NovaRequest $request, $model)
-    {
-        $method = 'relatable' . Str::plural(class_basename($model));
-
-        if (method_exists($request->resource(), $method)) {
-            return $method;
-        }
-    }
 
     /**
      * Format the given associatable resource.
@@ -325,18 +205,15 @@ class MinimizedHasOne extends Field implements RelatableField
     public function formatAssociatableResource(NovaRequest $request, $resource)
     {
         return array_filter([
-            'avatar' => $resource->resolveAvatarUrl($request),
             'display' => $resource->id,
-            'subtitle' => $resource->subtitle(),
             'value' => $resource->getKey(),
         ]);
     }
 
     protected function formatDisplayValue($resource)
     {
-        $resource_property = config('nova-minimized-has-one-field.resource_property');
-        if ($resource_property === null) return $resource->id;
-        else return $resource->{$resource_property};
+
+        return $resource->id;
     }
     /**
      * Specify if the related resource can be viewed.
@@ -365,19 +242,6 @@ class MinimizedHasOne extends Field implements RelatableField
     }
 
     /**
-     * Set the attribute name of the inverse of the relationship.
-     *
-     * @param  string  $inverse
-     * @return $this
-     */
-    public function inverse($inverse)
-    {
-        $this->inverse = $inverse;
-
-        return $this;
-    }
-
-    /**
      * Set the displayable singular label of the resource.
      *
      * @return $this
@@ -390,37 +254,26 @@ class MinimizedHasOne extends Field implements RelatableField
     }
 
     /**
-     * hides the "With Trashed" option.
-     *
-     * @return $this
-     */
-    public function withoutTrashed()
-    {
-        $this->displaysWithTrashed = false;
-
-        return $this;
-    }
-
-    /**
      * Prepare the field for JSON serialization.
      *
      * @return array
      */
     public function jsonSerialize()
     {
+        $model = $this->resourceClass::$model::find($this->hasOneId);
+        $resource = $model != null ? Nova::newResourceFromModel($model) : null;
+        // $test = $resource->serializeForDetail(app(NovaRequest::class), $resource);
+        // dd($test);
+        // \Log::info($this->resourceClass);
         return array_merge([
             'hasOneId' => $this->hasOneId,
             'hasOneRelationship' => $this->hasOneRelationship,
-            'debounce' => $this->debounce,
-            'displaysWithTrashed' => $this->displaysWithTrashed,
             'label' => forward_static_call([$this->resourceClass, 'label']),
             'resourceName' => $this->resourceName,
-            'reverse' => $this->isReverseRelation(app(NovaRequest::class)),
-            'searchable' => $this->searchable,
-            'withSubtitles' => $this->withSubtitles,
             'showCreateRelationButton' => $this->createRelationShouldBeShown(app(NovaRequest::class)),
             'singularLabel' => $this->singularLabel,
-            'viewable' => $this->viewable
+            'viewable' => $this->viewable,
+            'resource' => $resource != null ? $resource->serializeForDetail(app(NovaRequest::class), $resource) : null
         ], parent::jsonSerialize());
     }
 }

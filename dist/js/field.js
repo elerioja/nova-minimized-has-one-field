@@ -177,7 +177,7 @@ module.exports = function normalizeComponent (
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(2);
-module.exports = __webpack_require__(16);
+module.exports = __webpack_require__(11);
 
 
 /***/ }),
@@ -187,7 +187,7 @@ module.exports = __webpack_require__(16);
 Nova.booting(function (Vue, router, store) {
   Vue.component("index-nova-hasone-field-minimizer", __webpack_require__(3));
   Vue.component("detail-nova-hasone-field-minimizer", __webpack_require__(6));
-  Vue.component("form-nova-hasone-field-minimizer", __webpack_require__(9));
+  Vue.component("form-nova-hasone-field-minimizer", __webpack_require__(10));
 });
 
 /***/ }),
@@ -329,7 +329,7 @@ var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(7)
 /* template */
-var __vue_template__ = __webpack_require__(8)
+var __vue_template__ = __webpack_require__(9)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -373,26 +373,8 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -514,46 +496,71 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['resource', 'resourceName', 'resourceId', 'field', 'testId', 'restoreResource', 'resourcesSelected', 'resourceName', 'relationshipType', 'viaRelationship', 'viaResource', 'viaResourceId', 'viaManyToMany', 'checked', 'actionsAreAvailable', 'shouldShowCheckboxes', 'updateSelectionStatus', 'queryString', 'reorderDisabled', 'resourceIsSortable'],
-  mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["Deletable"]],
+  props: ['resource', 'resourceName', 'resourceId', 'field', 'testId', 'queryString'],
+
   data: function data() {
     return {
-      deleteModalOpen: false,
-      restoreModalOpen: false
+      deleteModalOpen: false
     };
   },
   mounted: function mounted() {
-    console.log('field', this.field), console.log('resource', this.resource);
+    console.log('res', this.resource);
+    console.log('field', this.field);
   },
 
-
+  mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["Deletable"]],
   methods: {
     /**
      * Select the resource in the parent component
      */
-    toggleSelection: function toggleSelection() {
-      this.updateSelectionStatus(this.resource);
-    },
+
     openDeleteModal: function openDeleteModal() {
       this.deleteModalOpen = true;
     },
     confirmDelete: function confirmDelete() {
-      console.log('resourceee', this.resource);
-      this.deleteResources([this.resource]);
-      this.closeDeleteModal();
+      var _this = this;
+
+      this.deleteResources([this.field.resource], function (response) {
+        Nova.success(_this.__('The :resource was deleted!', {
+          resource: _this.field.singularLabel.toLowerCase()
+        }));
+        window.location.reload();
+      });
+    },
+    getResources: function getResources() {
+      var _this2 = this;
+
+      this.loading = true;
+
+      this.$nextTick(function () {
+        _this2.clearResourceSelections();
+
+        return Object(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["Minimum"])(Nova.request().get('/nova-api/' + _this2.resourceName, {
+          params: _this2.resourceRequestQueryString
+        }), 300).then(function (_ref) {
+          var data = _ref.data;
+
+          _this2.resources = [];
+
+          _this2.resourceResponse = data;
+          _this2.resources = data.resources;
+          _this2.softDeletes = data.softDeletes;
+          _this2.perPage = data.per_page;
+          _this2.allMatchingResourceCount = data.total;
+
+          _this2.loading = false;
+          window.location.reload();
+          _this2.$emit('reload-resources');
+          _this2.$emit('refresh');
+        });
+      });
+    },
+    clearResourceSelections: function clearResourceSelections() {
+      this.selectAllMatchingResources = false;
+      this.selectedResources = [];
     },
     closeDeleteModal: function closeDeleteModal() {
       this.deleteModalOpen = false;
-    },
-    openRestoreModal: function openRestoreModal() {
-      this.restoreModalOpen = true;
-    },
-    confirmRestore: function confirmRestore() {
-      this.restoreResources(this.resource);
-      this.closeRestoreModal();
-    },
-    closeRestoreModal: function closeRestoreModal() {
-      this.restoreModalOpen = false;
     }
   },
   computed: {
@@ -564,414 +571,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   }
 });
+function mapResources(resources) {
+  return _.map(resources, function (resource) {
+    return resource.hasOneId;
+  });
+}
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "panel-item",
-    { attrs: { field: _vm.field } },
-    [
-      _c("template", { slot: "value" }, [
-        _c(
-          "div",
-          { staticClass: "flex space-between" },
-          [
-            _vm.field.viewable && _vm.field.value
-              ? _c(
-                  "router-link",
-                  {
-                    staticClass: "no-underline font-bold dim text-primary",
-                    attrs: {
-                      to: {
-                        name: "detail",
-                        params: {
-                          resourceName: _vm.field.resourceName,
-                          resourceId: _vm.field.hasOneId
-                        }
-                      }
-                    }
-                  },
-                  [_vm._v("\n      " + _vm._s(_vm.field.value) + " \n    ")]
-                )
-              : _vm.field.value
-              ? _c("p", [_vm._v(_vm._s(_vm.field.value))])
-              : _c(
-                  "router-link",
-                  {
-                    staticClass:
-                      "btn btn-sm btn-outline inline-flex items-center focus:outline-none focus:shadow-outline active:outline-none active:shadow-outline",
-                    attrs: {
-                      dusk: "create-button",
-                      to: {
-                        name: "create",
-                        params: {
-                          resourceName: _vm.resourceName
-                        },
-                        query: {
-                          viaResource: _vm.viaResource,
-                          viaResourceId: _vm.viaResourceId,
-                          viaRelationship: _vm.viaRelationship
-                        }
-                      }
-                    }
-                  },
-                  [_vm._v("\n    Create " + _vm._s(_vm.singularName) + " \n  ")]
-                ),
-            _vm._v(" "),
-            _c(
-              "div",
-              [
-                _vm.field.viewable && _vm.field.value
-                  ? _c(
-                      "span",
-                      { staticClass: "inline-flex" },
-                      [
-                        _c(
-                          "router-link",
-                          {
-                            directives: [
-                              {
-                                name: "tooltip",
-                                rawName: "v-tooltip.click",
-                                value: _vm.__("View"),
-                                expression: "__('View')",
-                                modifiers: { click: true }
-                              }
-                            ],
-                            staticClass:
-                              "cursor-pointer text-70 hover:text-primary mr-3 inline-flex items-center",
-                            attrs: {
-                              "data-testid": _vm.testId + "-view-button",
-                              dusk: _vm.field.hasOneId + "-view-button",
-                              to: {
-                                name: "detail",
-                                params: {
-                                  resourceName: _vm.field.resourceName,
-                                  resourceId: _vm.field.hasOneId
-                                }
-                              }
-                            }
-                          },
-                          [
-                            _c("icon", {
-                              attrs: {
-                                type: "view",
-                                width: "22",
-                                height: "18",
-                                "view-box": "0 0 22 16"
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.field.viewable && _vm.field.value
-                  ? _c(
-                      "span",
-                      { staticClass: "inline-flex" },
-                      [
-                        _c(
-                          "router-link",
-                          {
-                            directives: [
-                              {
-                                name: "tooltip",
-                                rawName: "v-tooltip.click",
-                                value: _vm.__("Edit"),
-                                expression: "__('Edit')",
-                                modifiers: { click: true }
-                              }
-                            ],
-                            staticClass:
-                              "inline-flex cursor-pointer text-70 hover:text-primary mr-3",
-                            attrs: {
-                              dusk: _vm.field.hasOneId + "-edit-button",
-                              to: {
-                                name: "edit",
-                                params: {
-                                  resourceName: _vm.field.resourceName,
-                                  resourceId: _vm.field.hasOneId
-                                },
-                                query: {
-                                  viaResource: _vm.viaResource,
-                                  viaResourceId: _vm.viaResourceId,
-                                  viaRelationship: _vm.viaRelationship
-                                }
-                              }
-                            }
-                          },
-                          [_c("icon", { attrs: { type: "edit" } })],
-                          1
-                        )
-                      ],
-                      1
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.field.viewable && _vm.field.value
-                  ? _c(
-                      "button",
-                      {
-                        directives: [
-                          {
-                            name: "tooltip",
-                            rawName: "v-tooltip.click",
-                            value: _vm.__(
-                              _vm.viaManyToMany ? "Detach" : "Delete"
-                            ),
-                            expression:
-                              "__(viaManyToMany ? 'Detach' : 'Delete')",
-                            modifiers: { click: true }
-                          }
-                        ],
-                        staticClass:
-                          "inline-flex appearance-none cursor-pointer text-70 hover:text-primary mr-3",
-                        attrs: {
-                          "data-testid": _vm.testId + "-delete-button",
-                          dusk: _vm.field.hasOneId + "-delete-button"
-                        },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.openDeleteModal($event)
-                          }
-                        }
-                      },
-                      [_c("icon")],
-                      1
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.resource.authorizedToRestore &&
-                _vm.resource.softDeleted &&
-                !_vm.viaManyToMany
-                  ? _c(
-                      "button",
-                      {
-                        directives: [
-                          {
-                            name: "tooltip",
-                            rawName: "v-tooltip.click",
-                            value: _vm.__("Restore"),
-                            expression: "__('Restore')",
-                            modifiers: { click: true }
-                          }
-                        ],
-                        staticClass:
-                          "appearance-none cursor-pointer text-70 hover:text-primary mr-3",
-                        attrs: { dusk: _vm.field.hasOneId + "-restore-button" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.openRestoreModal($event)
-                          }
-                        }
-                      },
-                      [
-                        _c("icon", {
-                          attrs: { type: "restore", with: "20", height: "21" }
-                        })
-                      ],
-                      1
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.deleteModalOpen || _vm.restoreModalOpen
-                  ? _c(
-                      "portal",
-                      {
-                        attrs: { to: "modals", transition: "fade-transition" }
-                      },
-                      [
-                        _vm.deleteModalOpen
-                          ? _c("delete-resource-modal", {
-                              attrs: {
-                                mode: _vm.viaManyToMany ? "detach" : "delete"
-                              },
-                              on: {
-                                confirm: _vm.confirmDelete,
-                                close: _vm.closeDeleteModal
-                              },
-                              scopedSlots: _vm._u(
-                                [
-                                  {
-                                    key: "default",
-                                    fn: function(ref) {
-                                      var uppercaseMode = ref.uppercaseMode
-                                      var mode = ref.mode
-                                      return _c(
-                                        "div",
-                                        { staticClass: "p-8" },
-                                        [
-                                          _c(
-                                            "heading",
-                                            {
-                                              staticClass: "mb-6",
-                                              attrs: { level: 2 }
-                                            },
-                                            [
-                                              _vm._v(
-                                                _vm._s(
-                                                  _vm.__(
-                                                    uppercaseMode + " Resource"
-                                                  )
-                                                )
-                                              )
-                                            ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "p",
-                                            {
-                                              staticClass:
-                                                "text-80 leading-normal"
-                                            },
-                                            [
-                                              _vm._v(
-                                                "\n              " +
-                                                  _vm._s(
-                                                    _vm.__(
-                                                      "Are you sure you want to " +
-                                                        mode +
-                                                        " this resource?"
-                                                    )
-                                                  ) +
-                                                  "\n            "
-                                              )
-                                            ]
-                                          )
-                                        ],
-                                        1
-                                      )
-                                    }
-                                  }
-                                ],
-                                null,
-                                false,
-                                334664622
-                              )
-                            })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.restoreModalOpen
-                          ? _c(
-                              "restore-resource-modal",
-                              {
-                                on: {
-                                  confirm: _vm.confirmRestore,
-                                  close: _vm.closeRestoreModal
-                                }
-                              },
-                              [
-                                _c(
-                                  "div",
-                                  { staticClass: "p-8" },
-                                  [
-                                    _c(
-                                      "heading",
-                                      {
-                                        staticClass: "mb-6",
-                                        attrs: { level: 2 }
-                                      },
-                                      [
-                                        _vm._v(
-                                          _vm._s(_vm.__("Restore Resource"))
-                                        )
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "p",
-                                      { staticClass: "text-80 leading-normal" },
-                                      [
-                                        _vm._v(
-                                          "\n              " +
-                                            _vm._s(
-                                              _vm.__(
-                                                "Are you sure you want to restore this resource?"
-                                              )
-                                            ) +
-                                            "\n            "
-                                        )
-                                      ]
-                                    )
-                                  ],
-                                  1
-                                )
-                              ]
-                            )
-                          : _vm._e()
-                      ],
-                      1
-                    )
-                  : _vm._e()
-              ],
-              1
-            )
-          ],
-          1
-        )
-      ])
-    ],
-    2
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-0224618e", module.exports)
-  }
-}
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = null
-/* template */
-var __vue_template__ = null
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/FormField.vue"
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -27241,11 +26848,401 @@ if (hadRuntime) {
 });
 
 /***/ }),
-/* 15 */,
-/* 16 */
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "panel-item",
+    { attrs: { field: _vm.field } },
+    [
+      _c("template", { slot: "value" }, [
+        _c(
+          "div",
+          { staticClass: "flex space-between" },
+          [
+            _vm.field.viewable && _vm.field.value
+              ? _c(
+                  "router-link",
+                  {
+                    staticClass: "no-underline font-bold dim text-primary",
+                    attrs: {
+                      to: {
+                        name: "detail",
+                        params: {
+                          resourceName: _vm.field.resourceName,
+                          resourceId: _vm.field.hasOneId,
+                          relatedResourceName: _vm.field.hasOneRelationship
+                        }
+                      }
+                    }
+                  },
+                  [_vm._v("\n      " + _vm._s(_vm.field.value) + " \n    ")]
+                )
+              : _vm.field.value
+              ? _c("p", [_vm._v(_vm._s(_vm.field.value))])
+              : _c(
+                  "router-link",
+                  {
+                    staticClass:
+                      "btn btn-sm btn-outline inline-flex items-center focus:outline-none focus:shadow-outline active:outline-none active:shadow-outline",
+                    attrs: {
+                      dusk: "create-button",
+                      to: {
+                        name: "create",
+                        params: {
+                          resourceName: _vm.field.resourceName,
+                          resourceId: _vm.field.hasOneId
+                        },
+                        query: {
+                          viaResource: _vm.field.resourceName,
+                          viaResourceId: _vm.resource.id.value,
+                          viaRelationship: _vm.field.hasOneRelationship
+                        }
+                      }
+                    }
+                  },
+                  [_vm._v("\n    Create " + _vm._s(_vm.singularName) + " \n  ")]
+                ),
+            _vm._v(" "),
+            _c(
+              "div",
+              [
+                _vm.field.viewable && _vm.field.value
+                  ? _c(
+                      "span",
+                      { staticClass: "inline-flex" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            directives: [
+                              {
+                                name: "tooltip",
+                                rawName: "v-tooltip.click",
+                                value: _vm.__("View"),
+                                expression: "__('View')",
+                                modifiers: { click: true }
+                              }
+                            ],
+                            staticClass:
+                              "cursor-pointer text-70 hover:text-primary mr-3 inline-flex items-center",
+                            attrs: {
+                              "data-testid": _vm.testId + "-view-button",
+                              dusk: _vm.field.hasOneId + "-view-button",
+                              to: {
+                                name: "detail",
+                                params: {
+                                  resourceName: _vm.field.resourceName,
+                                  resourceId: _vm.field.hasOneId
+                                }
+                              }
+                            }
+                          },
+                          [
+                            _c("icon", {
+                              attrs: {
+                                type: "view",
+                                width: "22",
+                                height: "18",
+                                "view-box": "0 0 22 16"
+                              }
+                            })
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.field.viewable && _vm.field.value
+                  ? _c(
+                      "span",
+                      { staticClass: "inline-flex" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            directives: [
+                              {
+                                name: "tooltip",
+                                rawName: "v-tooltip.click",
+                                value: _vm.__("Edit"),
+                                expression: "__('Edit')",
+                                modifiers: { click: true }
+                              }
+                            ],
+                            staticClass:
+                              "inline-flex cursor-pointer text-70 hover:text-primary mr-3",
+                            attrs: {
+                              dusk: _vm.field.hasOneId + "-edit-button",
+                              to: {
+                                name: "edit",
+                                params: {
+                                  resourceName: _vm.field.resourceName,
+                                  resourceId: _vm.field.hasOneId
+                                },
+                                query: {
+                                  viaResource: _vm.field.resourceName,
+                                  viaResourceId: _vm.resource.id.value,
+                                  viaRelationship: _vm.field.hasOneRelationship
+                                }
+                              }
+                            }
+                          },
+                          [_c("icon", { attrs: { type: "edit" } })],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.field.viewable && _vm.field.value
+                  ? _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "tooltip",
+                            rawName: "v-tooltip.click",
+                            value: _vm.__("Delete"),
+                            expression: "__('Delete')",
+                            modifiers: { click: true }
+                          }
+                        ],
+                        staticClass:
+                          "inline-flex appearance-none cursor-pointer text-70 hover:text-primary mr-3",
+                        attrs: {
+                          "data-testid": _vm.testId + "-delete-button",
+                          dusk: _vm.field.hasOneId + "-delete-button"
+                        },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.openDeleteModal($event)
+                          }
+                        }
+                      },
+                      [_c("icon")],
+                      1
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.deleteModalOpen
+                  ? _c(
+                      "portal",
+                      {
+                        attrs: { to: "modals", transition: "fade-transition" }
+                      },
+                      [
+                        _vm.deleteModalOpen
+                          ? _c("delete-resource-modal", {
+                              attrs: { mode: "delete" },
+                              on: {
+                                confirm: _vm.confirmDelete,
+                                close: _vm.closeDeleteModal
+                              },
+                              scopedSlots: _vm._u(
+                                [
+                                  {
+                                    key: "default",
+                                    fn: function(ref) {
+                                      var uppercaseMode = ref.uppercaseMode
+                                      var mode = ref.mode
+                                      return _c(
+                                        "div",
+                                        { staticClass: "p-8" },
+                                        [
+                                          _c(
+                                            "heading",
+                                            {
+                                              staticClass: "mb-6",
+                                              attrs: { level: 2 }
+                                            },
+                                            [
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm.__(
+                                                    uppercaseMode + " Resource"
+                                                  )
+                                                )
+                                              )
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "p",
+                                            {
+                                              staticClass:
+                                                "text-80 leading-normal"
+                                            },
+                                            [
+                                              _vm._v(
+                                                "\n              " +
+                                                  _vm._s(
+                                                    _vm.__(
+                                                      "Are you sure you want to " +
+                                                        mode +
+                                                        " this resource?"
+                                                    )
+                                                  ) +
+                                                  "\n            "
+                                              )
+                                            ]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    }
+                                  }
+                                ],
+                                null,
+                                false,
+                                334664622
+                              )
+                            })
+                          : _vm._e()
+                      ],
+                      1
+                    )
+                  : _vm._e()
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ])
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0224618e", module.exports)
+  }
+}
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(16)
+/* template */
+var __vue_template__ = __webpack_require__(17)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/FormField.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-c023248a", Component.options)
+  } else {
+    hotAPI.reload("data-v-c023248a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */,
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+  mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["FormField"]],
+  props: ['field'],
+  methods: {
+    fill: function fill(formData) {
+      formData.append(this.field.attribute, this.value || '');
+    }
+  }
+});
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "label",
+    {
+      staticClass: "inline-block text-80 pt-2 leading-tight",
+      attrs: { for: _vm.labelFor }
+    },
+    [_vm._t("default")],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-c023248a", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
