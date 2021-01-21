@@ -25,10 +25,6 @@ class FieldServiceProvider extends ServiceProvider
             Nova::script('nova-hasone-field-minimizer', __DIR__ . '/../dist/js/field.js');
             Nova::style('nova-hasone-field-minimizer', __DIR__ . '/../dist/css/field.css');
         });
-
-        Nova::provideToScript([
-            'resource_property' =>  config('nova-hasone-field-minimizer.resource_property', 'id'),
-        ]);
     }
 
     /**

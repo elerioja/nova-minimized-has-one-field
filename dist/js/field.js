@@ -26757,12 +26757,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -26885,7 +26879,6 @@ var render = function() {
                     staticClass:
                       "btn btn-sm btn-outline inline-flex items-center focus:outline-none focus:shadow-outline active:outline-none active:shadow-outline",
                     attrs: {
-                      dusk: "create-button",
                       to: {
                         name: "create",
                         params: {
@@ -26926,8 +26919,6 @@ var render = function() {
                             staticClass:
                               "cursor-pointer text-70 hover:text-primary mr-3 inline-flex items-center",
                             attrs: {
-                              "data-testid": _vm.testId + "-view-button",
-                              dusk: _vm.field.hasOneId + "-view-button",
                               to: {
                                 name: "detail",
                                 params: {
@@ -26974,7 +26965,6 @@ var render = function() {
                             staticClass:
                               "inline-flex cursor-pointer text-70 hover:text-primary mr-3",
                             attrs: {
-                              dusk: _vm.field.hasOneId + "-edit-button",
                               to: {
                                 name: "edit",
                                 params: {
@@ -27012,10 +27002,6 @@ var render = function() {
                         ],
                         staticClass:
                           "inline-flex appearance-none cursor-pointer text-70 hover:text-primary mr-3",
-                        attrs: {
-                          "data-testid": _vm.testId + "-delete-button",
-                          dusk: _vm.field.hasOneId + "-delete-button"
-                        },
                         on: {
                           click: function($event) {
                             $event.preventDefault()

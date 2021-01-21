@@ -21,7 +21,6 @@
       <!-- <p v-else>&mdash; {{label}}</p> --> 
       <router-link
       v-else
-      dusk="create-button"
       class="btn btn-sm btn-outline inline-flex items-center focus:outline-none focus:shadow-outline active:outline-none active:shadow-outline"
       :to="{
         name: 'create',
@@ -44,8 +43,6 @@
            <!-- View Resource Link -->
         <span v-if="field.viewable && field.value" class="inline-flex">
           <router-link
-            :data-testid="`${testId}-view-button`"
-            :dusk="`${field.hasOneId}-view-button`"
             class="cursor-pointer text-70 hover:text-primary mr-3 inline-flex items-center"
             v-tooltip.click="__('View')"
             :to="{
@@ -64,7 +61,6 @@
         <span v-if="field.viewable && field.value" class="inline-flex">
           <router-link
             class="inline-flex cursor-pointer text-70 hover:text-primary mr-3"
-            :dusk="`${field.hasOneId}-edit-button`"
             :to="{
               name: 'edit',
               params: {
@@ -85,8 +81,6 @@
 
         <!-- Delete Resource Link -->
         <button
-          :data-testid="`${testId}-delete-button`"
-          :dusk="`${field.hasOneId}-delete-button`"
           class="inline-flex appearance-none cursor-pointer text-70 hover:text-primary mr-3"
           v-tooltip.click="__('Delete')"
           v-if="field.viewable && field.value"
